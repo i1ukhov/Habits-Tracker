@@ -29,7 +29,8 @@
 4. Запустите проект Django.
 
 ## Покрытие тестами
-![[test coverage.png]]
+![test coverage](https://github.com/user-attachments/assets/2f0cc586-69c2-4e73-84d6-1d1de8723b17)
+
 
 ## Критерии приёмки
 - [ ] Настроили CORS.
