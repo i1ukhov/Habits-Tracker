@@ -1,4 +1,6 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 
 from habits.models import Habits
@@ -13,9 +15,7 @@ class HabitsCreateAPIView(CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
-        habit = serializer.save()
-        habit.user = self.request.user
-        habit.save()
+        serializer.save(user=self.request.user)
 
 
 class HabitsListAPIView(ListAPIView):
@@ -25,7 +25,7 @@ class HabitsListAPIView(ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        q = self.queryset.filter(user=self.request.user)
+        q = self.queryset.filter(user=self.request.user).order_by("time")
         return q
 
 
@@ -47,4 +47,8 @@ class HabitsDestroyAPIView(DestroyAPIView):
     permission_classes = (IsAuthenticated, IsOwner)
 
 
-# Контроллер для просмотра списка публичных привычек
+class PublicHabitsAPIView(ListAPIView):
+    serializer_class = HabitSerializer
+    queryset = Habits.objects.filter(is_public=True).order_by("time")
+    pagination_class = CustomPagination
+    permission_classes = (IsAuthenticated,)
